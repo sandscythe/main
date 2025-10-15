@@ -1,4 +1,15 @@
-/snap/bin/zig build-exe a.zig
+/snap/bin/zig build-exe a.zig -O ReleaseSmall
+
 strip --strip-all a
-printf '\0%.0s' {1..10} | dd of=a bs=1 seek=$(strings -t d a | grep -m1 'zig 0.15.2' | cut -d' ' -f1) conv=notrunc
+
+
+
+offset=$(strings -t d a | grep -m1 'Linker: LLD' | awk '{print $1}')
+if [ -n "$offset" ]; then
+  printf '\0%.0s' {1..106} | dd of=a bs=1 seek="$offset" conv=notrunc
+else
+  echo "Linker string not found."
+fi
+
+
 strings a | grep "zig"
