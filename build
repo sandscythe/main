@@ -1,0 +1,4 @@
+/snap/bin/zig build-exe a.zig
+strip --strip-all a
+printf '\0%.0s' {1..10} | dd of=a bs=1 seek=$(strings -t d a | grep -m1 'zig 0.15.2' | cut -d' ' -f1) conv=notrunc
+strings a | grep "zig"
